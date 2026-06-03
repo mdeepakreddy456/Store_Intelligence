@@ -3,6 +3,7 @@ import cv2
 from pathlib import Path
 
 from tracker import VisitorTracker
+from staff_classifier import StaffClassifier, EdgeCaseHandler
 from emit import (
     build_event,
     emit_event,
@@ -45,6 +46,10 @@ model = YOLO("yolov8n.pt")
 
 tracker = VisitorTracker()
 
+staff_classifier = StaffClassifier()
+
+edge_case_handler = EdgeCaseHandler()
+
 clear_events_file()
 
 
@@ -62,10 +67,21 @@ def create_and_emit(
     visitor_id,
     event_type,
     confidence,
+    bbox=None,
     zone_id=None,
     dwell_ms=0,
     queue_depth=None,
 ):
+    """Create and emit an event with staff classification."""
+
+    # Classify as staff or customer
+    is_staff = staff_classifier.classify_person(
+        camera_id=camera_id,
+        bbox=bbox if bbox else (0, 0, 0, 0),
+        confidence=confidence,
+        event_type=event_type,
+        zone_id=zone_id,
+    )
 
     event = build_event(
         store_id=STORE_ID,
@@ -75,7 +91,7 @@ def create_and_emit(
         confidence=confidence,
         zone_id=zone_id,
         dwell_ms=dwell_ms,
-        is_staff=False,
+        is_staff=is_staff,
         queue_depth=queue_depth,
         session_seq=tracker.get_session_seq(visitor_id),
     )
@@ -171,6 +187,7 @@ def process_video(video_path):
                         visitor_id,
                         event_type,
                         conf,
+                        bbox=box,
                     )
 
                 cv2.line(
@@ -221,6 +238,7 @@ def process_video(video_path):
                             visitor_id,
                             "ZONE_ENTER",
                             conf,
+                            bbox=box,
                             zone_id=current_zone,
                         )
 
@@ -233,6 +251,7 @@ def process_video(video_path):
                             visitor_id,
                             "ZONE_DWELL",
                             conf,
+                            bbox=box,
                             zone_id=current_zone,
                             dwell_ms=30000,
                         )
@@ -257,6 +276,7 @@ def process_video(video_path):
                         visitor_id,
                         "BILLING_QUEUE_JOIN",
                         conf,
+                        bbox=box,
                         queue_depth=queue_depth,
                     )
 

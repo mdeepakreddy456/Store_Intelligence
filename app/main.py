@@ -4,9 +4,11 @@ from fastapi import HTTPException
 
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import func
 
-from typing import List
-from datetime import datetime
+from typing import List, Optional
+from datetime import datetime, timedelta
+import time
 
 from app.db import Base
 from app.db import engine
@@ -29,6 +31,8 @@ from app.analytics import (
     get_heatmap,
     get_anomalies
 )
+
+from app.logging import logger
 
 
 # -----------------------------
@@ -63,11 +67,51 @@ def root():
     "/health",
     response_model=HealthResponse
 )
-def health():
+def health(db: Session = Depends(get_db)):
+    """Health check with database connectivity and stale feed detection."""
+    
+    try:
+        # Check database connectivity
+        db.query(Event).limit(1).all()
+        db_status = "connected"
+    except Exception as e:
+        logger.log_database_error(endpoint="/health")
+        return {
+            "status": "unhealthy",
+            "timestamp": datetime.utcnow().isoformat(),
+            "database": "disconnected",
+            "error": str(e)
+        }
+
+    # Get last event timestamp to detect stale feed
+    last_event = (
+        db.query(Event.timestamp)
+        .order_by(Event.timestamp.desc())
+        .first()
+    )
+
+    last_event_timestamp = None
+    stale_threshold_seconds = 300  # 5 minutes
+
+    if last_event and last_event[0]:
+        last_event_timestamp = last_event[0].isoformat()
+        time_since_last_event = (
+            datetime.utcnow() - last_event[0].replace(tzinfo=None)
+        ).total_seconds()
+
+        if time_since_last_event > stale_threshold_seconds:
+            logger.log_stale_feed(
+                store_id="STORE_BLR_002",
+                last_event_timestamp=last_event_timestamp,
+                stale_threshold_seconds=stale_threshold_seconds
+            )
+
     return {
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
-        "database": "connected"
+        "database": db_status,
+        "last_event_timestamp": last_event_timestamp,
+        "stale_threshold_seconds": stale_threshold_seconds
     }
 
 
@@ -79,12 +123,20 @@ def ingest_events(
     events: List[EventCreate],
     db: Session = Depends(get_db)
 ):
+    """Ingest behavioral events with deduplication and structured logging."""
+    
+    start_time = time.time()
     ingested = 0
     duplicates = 0
     failed = 0
+    store_id = "UNKNOWN"
+
+    if events and len(events) > 0:
+        store_id = events[0].store_id
 
     for event in events:
         try:
+            # Check for duplicates (idempotent ingestion)
             existing = (
                 db.query(Event)
                 .filter(
@@ -118,14 +170,19 @@ def ingest_events(
             db.add(db_event)
             ingested += 1
 
-        except Exception:
+        except Exception as e:
             failed += 1
 
     try:
         db.commit()
 
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
         db.rollback()
+        
+        logger.log_database_error(
+            store_id=store_id,
+            endpoint="/events/ingest"
+        )
 
         raise HTTPException(
             status_code=503,
@@ -134,6 +191,18 @@ def ingest_events(
                 "Database unavailable"
             }
         )
+
+    # Log successful ingestion with structured logging
+    latency_ms = (time.time() - start_time) * 1000
+    logger.log_event_ingest(
+        event_count=len(events),
+        ingested=ingested,
+        duplicates=duplicates,
+        failed=failed,
+        latency_ms=latency_ms,
+        status="success",
+        store_id=store_id
+    )
 
     return {
         "ingested": ingested,
