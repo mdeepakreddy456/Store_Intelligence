@@ -1,54 +1,54 @@
-# Store Intelligence
+# Retail Analytics Platform
 
-End-to-end Store Intelligence system for retail analytics using CCTV footage, FastAPI, PostgreSQL, and YOLOv8.
+Comprehensive retail insights platform leveraging CCTV analysis, FastAPI backend, PostgreSQL database, and YOLOv8 for customer behavior intelligence.
 
-## Features
+## Key Capabilities
 
-* CCTV person detection
-* Entry/Exit tracking
-* Zone dwell analytics
-* Billing queue detection
-* Real-time metrics API
-* Live dashboard
-* Dockerized deployment
-* Event replay system
+* Person detection from video feeds
+* Customer journey tracking (entry/exit events)
+* Location-based visitor duration metrics
+* Queue monitoring and analysis
+* REST API for real-time intelligence
+* Interactive metrics visualization
+* Container-based deployment
+* Event stream processing and replay
 
 ---
 
-## Setup
+## Getting Started
 
-### 1. Clone repository
+### 1. Get the code
 
 ```bash
 git clone <repo-url>
 cd store-intelligence
 ```
 
-### 2. Start API + database
+### 2. Launch backend services
 
 ```bash
 docker compose up --build
 ```
 
-### 3. Run detection pipeline
+### 3. Process video feeds
 
 ```bash
 python pipeline/detect.py
 ```
 
-This generates:
+This produces:
 
 ```text
 pipeline/output/events.jsonl
 ```
 
-### 4. Replay events into API
+### 4. Load analytics data
 
 ```bash
 python pipeline/replay_events.py
 ```
 
-### 5. Open Swagger API docs
+### 5. Access API documentation
 
 ```text
 http://localhost:8000/docs
@@ -56,46 +56,46 @@ http://localhost:8000/docs
 
 ---
 
-## Live Dashboard
+## Interactive Dashboard
 
-Run:
+Execute:
 
 ```bash
 python dashboard/live_dashboard.py
 ```
 
-The dashboard updates metrics in near real-time while events are replayed.
+Dashboard refreshes with updated metrics as events are processed and ingested.
 
 ---
 
-## Run Tests
+## Testing
 
 ```bash
 pytest --cov=app
 ```
 
-Expected:
+Target metrics:
 
-* > 70% test coverage
-* API tests passing
+* Minimum 70% code coverage
+* All API tests pass
 
 ---
 
-## API Endpoints
+## Available Endpoints
 
-### Health
+### Status Check
 
 ```text
 GET /health
 ```
 
-### Metrics
+### Store Insights
 
 ```text
 GET /stores/{store_id}/metrics
 ```
 
-### Funnel
+### User Journey Analysis
 
 ```text
 GET /stores/{store_id}/funnel
@@ -147,3 +147,81 @@ store-intelligence/
 ├── docker-compose.yml
 └── README.md
 ```
+
+---
+
+## System Design
+
+Video Input → Detection & Tracking → Structured Events → Analytics Engine → Metrics API → Visualization
+
+---
+
+## Video Dataset
+
+Video files should be placed in:
+
+```
+data/videos/
+```
+
+Expected file format:
+
+```
+data/videos/CAM 1.mp4
+data/videos/CAM 2.mp4
+data/videos/CAM 3.mp4
+data/videos/CAM 4.mp4
+data/videos/CAM 5.mp4
+```
+
+---
+
+## Quick Demo Workflow
+
+1. Initialize services
+
+  ```bash
+  docker compose up --build
+  ```
+
+2. Execute detection
+
+  ```bash
+  python pipeline/detect.py
+  ```
+
+3. Populate database
+
+  ```bash
+  python pipeline/replay_events.py
+  ```
+
+4. Explore API
+
+  ```
+  http://localhost:8000/docs
+  ```
+
+5. Launch visualization
+
+  ```bash
+  python dashboard/live_dashboard.py
+  ```
+
+---
+
+## Implementation Notes
+
+This project was built with assistance from AI tools for architectural planning, implementation acceleration, validation, and testing optimization.
+
+All generated code has been thoroughly reviewed, adapted, and tested in practical scenarios.
+
+Refer to `docs/DESIGN.md` and `docs/CHOICES.md` for architectural decisions and engineering trade-offs.
+
+---
+
+## License
+
+Project-specific use only.
+
+Video dataset ownership and licensing terms remain with the original provider and are not included in this distribution.
