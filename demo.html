@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Analytics Platform - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 60px 40px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .metrics {
+            background: #f0f4ff;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .metric-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .metric-box .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .metric-box .label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+
+        .code-section {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 30px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .setup {
+            padding: 40px;
+            background: white;
+        }
+
+        .setup h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .setup ol {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .setup li {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏪 Retail Analytics Platform</h1>
+            <p>Real-time customer intelligence from CCTV analysis</p>
+        </header>
+
+        <div class="metrics">
+            <div class="metric-box">
+                <div class="number">96%</div>
+                <div class="label">Test Coverage</div>
+            </div>
+            <div class="metric-box">
+                <div class="number">YOLOv8n</div>
+                <div class="label">Detection Model</div>
+            </div>
+            <div class="metric-box">
+                <div class="number">PostgreSQL</div>
+                <div class="label">Database</div>
+            </div>
+            <div class="metric-box">
+                <div class="number">FastAPI</div>
+                <div class="label">Backend</div>
+            </div>
+        </div>
+
+        <div class="setup">
+            <h2>Key Features</h2>
+            <div class="grid" style="padding: 0;">
+                <div class="card">
+                    <h3>👤 Person Detection</h3>
+                    <p>Real-time detection of people from CCTV feeds using YOLOv8 with high accuracy.</p>
+                </div>
+                <div class="card">
+                    <h3>📍 Customer Journey</h3>
+                    <p>Track entry, exit, and re-entry events to understand customer movement patterns.</p>
+                </div>
+                <div class="card">
+                    <h3>⏱️ Dwell Analytics</h3>
+                    <p>Measure time spent in different zones for behavior insights.</p>
+                </div>
+                <div class="card">
+                    <h3>📊 Queue Monitoring</h3>
+                    <p>Real-time queue depth detection at billing and checkout areas.</p>
+                </div>
+                <div class="card">
+                    <h3>📈 Live Metrics</h3>
+                    <p>Interactive dashboard with real-time store intelligence metrics.</p>
+                </div>
+                <div class="card">
+                    <h3>🔄 Event Replay</h3>
+                    <p>Flexible event ingestion and replay for testing and analysis.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="setup">
+            <h2>Quick Start</h2>
+            <ol>
+                <li><strong>Clone Repository:</strong>
+                    <div class="code-section">git clone https://github.com/mdeepakreddy456/Store_Intelligence.git</div>
+                </li>
+                <li><strong>Start Services:</strong>
+                    <div class="code-section">docker compose up --build</div>
+                </li>
+                <li><strong>Run Detection:</strong>
+                    <div class="code-section">python pipeline/detect.py</div>
+                </li>
+                <li><strong>Access API:</strong>
+                    <div class="code-section">http://localhost:8000/docs</div>
+                </li>
+                <li><strong>Launch Dashboard:</strong>
+                    <div class="code-section">python dashboard/live_dashboard.py</div>
+                </li>
+            </ol>
+            <a href="https://github.com/mdeepakreddy456/Store_Intelligence" class="button">View on GitHub</a>
+        </div>
+
+        <div class="setup">
+            <h2>API Endpoints</h2>
+            <ul style="margin-left: 20px; color: #555;">
+                <li><code style="background: #f0f0f0; padding: 4px 8px; border-radius: 4px;">GET /health</code> - Service health check</li>
+                <li><code style="background: #f0f0f0; padding: 4px 8px; border-radius: 4px;">GET /stores/{store_id}/metrics</code> - Store metrics</li>
+                <li><code style="background: #f0f0f0; padding: 4px 8px; border-radius: 4px;">GET /stores/{store_id}/funnel</code> - Visitor funnel</li>
+                <li><code style="background: #f0f0f0; padding: 4px 8px; border-radius: 4px;">GET /stores/{store_id}/heatmap</code> - Zone heatmap</li>
+                <li><code style="background: #f0f0f0; padding: 4px 8px; border-radius: 4px;">GET /stores/{store_id}/anomalies</code> - Operational anomalies</li>
+                <li><code style="background: #f0f0f0; padding: 4px 8px; border-radius: 4px;">POST /events/ingest</code> - Ingest events</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Retail Analytics Platform. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Built with FastAPI, PostgreSQL, YOLOv8, and Docker</p>
+        </footer>
+    </div>
+</body>
+</html>
