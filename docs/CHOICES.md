@@ -25,7 +25,7 @@ YOLOv8n was selected because:
 * Simple integration with tracking
 * Mature documentation
 
-The challenge prioritizes an end-to-end working system rather than perfect detection accuracy. YOLOv8n balanced speed and acceptable accuracy.
+The project prioritizes an end-to-end working system rather than perfect detection accuracy. YOLOv8n balanced speed and acceptable accuracy.
 
 ByteTrack was added to improve identity consistency across frames.
 
@@ -54,7 +54,7 @@ Cons:
 
 ### AI Suggestion
 
-AI suggested event-driven architecture because the challenge described a streaming analytics pipeline.
+AI suggested event-driven architecture because the system benefits from a streaming analytics pipeline.
 
 ### Final Choice: JSONL Event Stream
 
@@ -224,7 +224,7 @@ Confidence is calibrated through experimentation.
 Pros:
 * No additional model training required
 * Fast, interpretable logic
-* Works with challenge constraints
+* Works within current project constraints
 
 Cons:
 * Cannot handle ambiguous cases

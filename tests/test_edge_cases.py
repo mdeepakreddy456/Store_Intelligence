@@ -1,16 +1,12 @@
-"""
-Comprehensive edge case tests for Store Intelligence API and detection pipeline.
-
-Tests cover:
-- Empty store scenarios
-- Staff-only footage
-- Zero conversion rates
-- Re-entry detection
-- Group entry detection
-- Crowded billing areas
-- Partial occlusion handling
-- Stale feed warnings
-"""
+# PROMPT:
+# Generate edge-case tests for a Store Intelligence API covering empty-store periods,
+# staff exclusion, zero conversion, re-entry, queue behavior, idempotency, stale feeds,
+# and batch event ingestion for a retail CCTV analytics challenge.
+#
+# CHANGES MADE:
+# Added project-specific payloads, reinforced expected metrics behavior,
+# kept idempotency assertions explicit, and aligned the scenarios with the
+# challenge edge cases called out in the problem statement.
 
 import os
 os.environ["POSTGRES_HOST"] = "localhost"

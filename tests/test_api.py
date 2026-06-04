@@ -3,7 +3,7 @@
 # metrics, funnel, heatmap, anomalies and event ingestion.
 #
 # CHANGES MADE:
-# Added challenge-specific assertions and simplified setup.
+# Added API assertions and simplified setup.
 import os
 
 os.environ["POSTGRES_HOST"] = "localhost"

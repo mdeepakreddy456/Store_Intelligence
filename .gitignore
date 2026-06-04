@@ -3,3 +3,4 @@ data/videos/
 __pycache__/
 *.pyc
 .env
+resources/

@@ -91,7 +91,7 @@ def health(db: Session = Depends(get_db)):
     )
 
     last_event_timestamp = None
-    stale_threshold_seconds = 600  # 10 minutes per problem statement
+    stale_threshold_seconds = 600  # 10 minutes
 
     if last_event and last_event[0]:
         last_event_timestamp = last_event[0].isoformat()

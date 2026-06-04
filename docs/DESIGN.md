@@ -146,7 +146,7 @@ In several places, generated suggestions were modified manually after testing an
 
 ## 7. Limitations
 
-This implementation is intentionally lightweight and optimized for challenge constraints.
+This implementation is intentionally lightweight and optimized for current project constraints.
 
 Known limitations include:
 

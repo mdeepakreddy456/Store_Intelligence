@@ -1,227 +1,96 @@
-# Retail Analytics Platform
+# Store Intelligence
 
-Comprehensive retail insights platform leveraging CCTV analysis, FastAPI backend, PostgreSQL database, and YOLOv8 for customer behavior intelligence.
+End-to-end retail analytics pipeline that turns CCTV detections into structured events, real-time API metrics, and a live dashboard.
 
-## Key Capabilities
+## Submission Deliverables
 
-* Person detection from video feeds
-* Customer journey tracking (entry/exit events)
-* Location-based visitor duration metrics
-* Queue monitoring and analysis
-* REST API for real-time intelligence
-* Interactive metrics visualization
-* Container-based deployment
-* Event stream processing and replay
+This repository now includes the required submission artifacts at the repo root:
 
----
+- `README.md`
+- `DESIGN.md`
+- `CHOICES.md`
+- `event_log.jsonl`
 
-## Getting Started
+The internal pipeline writes canonical API events to `pipeline/output/events.jsonl`. The root `event_log.jsonl` is the submission-ready JSONL export aligned to the provided sample event schema.
 
-### 1. Get the code
+## Repository Layout
 
-```bash
-git clone <repo-url>
-cd store-intelligence
+```text
+app/            FastAPI app, schemas, analytics, persistence
+pipeline/       Detection, tracking, event emission, submission export
+dashboard/      Live dashboard
+resources/      Challenge assets and sample files
+tests/          API and edge-case coverage
+event_log.jsonl Submission-ready event log
 ```
 
-### 2. Launch backend services
+## Quick Start
+
+Run the project in the acceptance-gate flow:
 
 ```bash
 docker compose up --build
-```
-
-### 3. Process video feeds
-
-```bash
 python pipeline/detect.py
+python pipeline/export_submission_events.py
+python pipeline/replay_events.py
+pytest --cov=app
 ```
 
-This produces:
+What each step does:
 
-```text
-pipeline/output/events.jsonl
-```
+1. `docker compose up --build` starts PostgreSQL and the FastAPI service.
+2. `python pipeline/detect.py` processes local video clips and emits internal events to `pipeline/output/events.jsonl`.
+3. `python pipeline/export_submission_events.py` converts the internal event stream into the submission artifact `event_log.jsonl`.
+4. `python pipeline/replay_events.py` replays internal events into `POST /events/ingest`.
+5. `pytest --cov=app` runs the API and edge-case tests.
 
-### 4. Load analytics data
+## API Endpoints
+
+- `GET /health`
+- `POST /events/ingest`
+- `GET /stores/{store_id}/metrics`
+- `GET /stores/{store_id}/funnel`
+- `GET /stores/{store_id}/heatmap`
+- `GET /stores/{store_id}/anomalies`
+
+Interactive API docs are available at `http://localhost:8000/docs`.
+
+## Event Files
+
+- `pipeline/output/events.jsonl`: internal analytics event stream used by the API.
+- `event_log.jsonl`: submission-ready JSONL export in the organizer sample style.
+- `resources/sample_eventsbe42122.jsonl`: organizer-provided sample schema reference.
+
+To regenerate the submission file:
 
 ```bash
-python pipeline/replay_events.py
+python pipeline/export_submission_events.py
 ```
 
-### 5. Access API documentation
+To validate that the export is valid JSONL:
 
-```text
-http://localhost:8000/docs
+```bash
+python pipeline/export_submission_events.py --validate-only
 ```
 
----
+## Dashboard
 
-## Interactive Dashboard
-
-Execute:
+Run the live dashboard with:
 
 ```bash
 python dashboard/live_dashboard.py
 ```
 
-Dashboard refreshes with updated metrics as events are processed and ingested.
+This demonstrates that the event pipeline and API are connected by showing metrics that refresh as events are ingested.
 
----
+## Notes on the Current Build
 
-## Testing
+- Staff exclusion is handled via rule-based heuristics in `pipeline/staff_classifier.py`.
+- Re-entry is supported through the tracker state in `pipeline/tracker.py`.
+- The submission export preserves all internal detections and writes missing sample-only fields as `null` when the current pipeline does not infer them.
 
-```bash
-pytest --cov=app
-```
+## Documentation
 
-Target metrics:
+- `DESIGN.md` explains the architecture and includes the required `AI-Assisted Decisions` section.
+- `CHOICES.md` documents model, schema, and API decisions with AI suggestions and final trade-offs.
 
-* Minimum 70% code coverage
-* All API tests pass
-
----
-
-## Available Endpoints
-
-### Status Check
-
-```text
-GET /health
-```
-
-### Store Insights
-
-```text
-GET /stores/{store_id}/metrics
-```
-
-### User Journey Analysis
-
-```text
-GET /stores/{store_id}/funnel
-```
-
-### Heatmap
-
-```text
-GET /stores/{store_id}/heatmap
-```
-
-### Anomalies
-
-```text
-GET /stores/{store_id}/anomalies
-```
-
-### Ingest Events
-
-```text
-POST /events/ingest
-```
-
----
-
-## Tech Stack
-
-* YOLOv8n
-* ByteTrack
-* FastAPI
-* PostgreSQL
-* Docker
-* OpenCV
-* Rich Dashboard
-* Pytest
-
----
-
-## Project Structure
-
-```text
-store-intelligence/
-│
-├── app/
-├── pipeline/
-├── dashboard/
-├── tests/
-├── docs/
-├── docker-compose.yml
-└── README.md
-```
-
----
-
-## System Design
-
-Video Input → Detection & Tracking → Structured Events → Analytics Engine → Metrics API → Visualization
-
----
-
-## Video Dataset
-
-Video files should be placed in:
-
-```
-data/videos/
-```
-
-Expected file format:
-
-```
-data/videos/CAM 1.mp4
-data/videos/CAM 2.mp4
-data/videos/CAM 3.mp4
-data/videos/CAM 4.mp4
-data/videos/CAM 5.mp4
-```
-
----
-
-## Quick Demo Workflow
-
-1. Initialize services
-
-  ```bash
-  docker compose up --build
-  ```
-
-2. Execute detection
-
-  ```bash
-  python pipeline/detect.py
-  ```
-
-3. Populate database
-
-  ```bash
-  python pipeline/replay_events.py
-  ```
-
-4. Explore API
-
-  ```
-  http://localhost:8000/docs
-  ```
-
-5. Launch visualization
-
-  ```bash
-  python dashboard/live_dashboard.py
-  ```
-
----
-
-## Implementation Notes
-
-This project was built with assistance from AI tools for architectural planning, implementation acceleration, validation, and testing optimization.
-
-All generated code has been thoroughly reviewed, adapted, and tested in practical scenarios.
-
-Refer to `docs/DESIGN.md` and `docs/CHOICES.md` for architectural decisions and engineering trade-offs.
-
----
-
-## License
-
-Project-specific use only.
-
-Video dataset ownership and licensing terms remain with the original provider and are not included in this distribution.
